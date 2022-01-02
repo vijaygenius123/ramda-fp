@@ -1,5 +1,5 @@
 // @ts-nocheck
-import {curry, lensProp, map, over, ifElse, propEq} from "ramda";
+import {curry, lensProp, map, over, cond, propEq, T, identity} from "ramda";
 
 
 const products = [
@@ -11,10 +11,11 @@ const products = [
 const pLens = lensProp('price')
 const applyDiscount = curry((per, amt) => amt - (amt * per / 100))
 
-const adjustPrice = ifElse(
-    propEq('category', 'electronics'),
-    over(pLens, applyDiscount(50)),
-    over(pLens, applyDiscount(10))
+const adjustPrice = cond([
+        [propEq('category', 'electronics'), over(pLens, applyDiscount(50))],
+        [propEq('category', 'games'), over(pLens, applyDiscount(10))],
+        [T, identity]
+    ]
 )
 
 
